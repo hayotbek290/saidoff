@@ -2,12 +2,45 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
 
     def __str__(self):
         return self.name
 
+class SubjectTitle(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+  
+    def __str__(self):
+        return self.name
+
 class Subject(models.Model):
+    name = models.CharField(max_length=255)
+    subjecttitle = models.ForeignKey(SubjectTitle, on_delete=models.CASCADE)
+ 
+    def __str__(self):
+        return self.name
+
+class SubjectType(models.Model):
+   
+    name = models.CharField(max_length=255)
+    subtopic = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    SUBJECT_TYPE_CHOICES = (
+        ('local', 'Local'),
+        ('global', 'Global'),
+    )
+
+    def __str__(self):
+        return self.name
+
+class UserSubject(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    user = models.CharField(max_length=100)
+    total_test_ball = models.FloatField()
+
+    def __str__(self):
+        return self.title
+
+class Vacancy(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -15,44 +48,11 @@ class Subject(models.Model):
     def __str__(self):
         return self.name
 
-class Subtopic(models.Model):
+class Step(models.Model):
+    title = models.CharField(max_length=255)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
     description = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-class Unit(models.Model):
-    subtopic = models.ForeignKey(Subtopic, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-class Lesson(models.Model):
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    video_url = models.URLField(null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-class Resource(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    file = models.FileField(upload_to='resources/')
-
-    def __str__(self):
-        return self.name
-
-class Assignment(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    due_date = models.DateTimeField()
+    order = models.IntegerField()
 
     def __str__(self):
         return self.title
@@ -66,42 +66,81 @@ class Exam(models.Model):
     def __str__(self):
         return self.title
 
-class Quiz(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+class Club(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
     description = models.TextField()
-    date = models.DateTimeField()
 
+    def __str__(self):
+        return self.name
+
+
+class UserClub(models.Model):
+    user = models.CharField(max_length=100)
+    club = models.CharField(max_length=255)
+
+
+
+
+class ClubMeeting(models.Model):
+    name = models.CharField(max_length=100)
+    ##################################### validator
+    location = models.URLField()
+    date = models.DateField()
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class StepLesson(models.Model):
+    title = models.CharField(max_length=255)
+    file = models.FileField()
+    step = models.ForeignKey(Step, on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.title
+    
 
-class Student(models.Model):
-    enrollment_date = models.DateField()
+class StepTest(models.Model):
+    step = models.ForeignKey(Step, models.CASCADE)
+    ball_for_each_test = models.FloatField()
+    question_count = models.IntegerField()
+    question_type = models.CharField(max_length=100, choices=[
+        ('multiple_choice', 'Multiple Choice'),
+        ('true_false', 'True/False'),
+        ('short_answer', 'Short Answer')
+    ])
+    type = models.CharField(max_length=100, choices=[
+        ('practice', 'Practice'),
+        ('assessment', 'Assessment')
+    ])
+    time_for_question = models.IntegerField()
 
-    def __str__(self):
-        return self.user.username
 
-class Enrollment(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    enrollment_date = models.DateField()
+#########################################################################################   MODE
 
-    def __str__(self):
-        return f"{self.student.user.username} enrolled in {self.subject.name}"
+class TestQuestion(models.Model):
+    steptest = models.ForeignKey(StepTest, models.CASCADE)
+    text = models.TextField()
 
-class Grade(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    grade = models.DecimalField(max_digits=5, decimal_places=2)
+class TestAnswer(models.Model):
+    testquestion = models.ForeignKey(TestQuestion, models.CASCADE)
+    text = models.TextField()
+    is_correct = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.student.user.username} - {self.assignment.title} - {self.grade}"
+#########################################################################################   QUESTIONTYPE
 
-class Attendance(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    date = models.DateField()
-    status = models.CharField(max_length=10)
 
-    def __str__(self):
-        return f"{self.student.user.username} - {self.lesson.title} - {self.status}"
+
+
+class UserTestResult(models.Model):
+    testquestion = models.ForeignKey(TestQuestion, models.CASCADE)
+    testanswer = models.ForeignKey(TestAnswer, models.CASCADE)
+
+#########################################################################################   USER
+
+class UserTestResult(models.Model):
+    steptest = models.ForeignKey(StepTest, models.CASCADE)
+    ball = models.FloatField()
+    correct_ans = models.IntegerField()
+    # testanswer = models.ForeignKey(TestAnswer, models.CASCADE) USER
