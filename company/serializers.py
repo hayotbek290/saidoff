@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from .models import ContactWithUs,FAQ
+from .models import FAQ,TestModel
 
 
-class ContactWithUsSesializer(serializers.ModelSerializer):
+
+class TestModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ContactWithUs
-        fields = ("name","phone_number","massage")
-         
-    def create(self, validated_data):
-        return ContactWithUs.objects.create(**validated_data)
+        model = TestModel
+        fields = '__all__'
+
+
     
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, SubjectTitle, Subject, SubjectType, UserSubject, Vacancy, Step, Exam, Club, UserClub, ClubMeeting, StepLesson, StepTest,TestQuestion,TestAnswer,UserTestResult
+from .models import Category, SubjectTitle, Subject, SubjectType, UserSubject, Vacancy, Step, Exam, Club, UserClub, ClubMeeting, StepLesson, StepTest,TestQuestion,TestAnswer,UserTestResult,UserTotalTestResult
 
 admin.site.register(Category)
 admin.site.register(SubjectTitle)
@@ -17,6 +17,8 @@ admin.site.register(StepTest)
 admin.site.register(TestQuestion)
 admin.site.register(TestAnswer)
 admin.site.register(UserTestResult)
+admin.site.register(UserTotalTestResult)
+
 
 
 

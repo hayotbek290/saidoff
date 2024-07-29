@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "news",
     "rosetta",
     "subject",
+    "account",
     
 
 

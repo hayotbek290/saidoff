@@ -1,4 +1,5 @@
 from django.db import models
+from account.models import UserMessage,User
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -37,8 +38,7 @@ class UserSubject(models.Model):
     user = models.CharField(max_length=100)
     total_test_ball = models.FloatField()
 
-    def __str__(self):
-        return self.title
+
 
 class Vacancy(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -136,11 +136,13 @@ class TestAnswer(models.Model):
 class UserTestResult(models.Model):
     testquestion = models.ForeignKey(TestQuestion, models.CASCADE)
     testanswer = models.ForeignKey(TestAnswer, models.CASCADE)
+    user = models.ForeignKey(User, models.CASCADE) 
+
 
 #########################################################################################   USER
 
-class UserTestResult(models.Model):
+class UserTotalTestResult(models.Model):
     steptest = models.ForeignKey(StepTest, models.CASCADE)
     ball = models.FloatField()
     correct_ans = models.IntegerField()
-    # testanswer = models.ForeignKey(TestAnswer, models.CASCADE) USER
+    user = models.ForeignKey(User, models.CASCADE) 
