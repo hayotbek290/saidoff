@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from .models import FAQ,TestModel
+from .models import FAQ,TestModel,ContactWithUsMobile
 
+
+
+class ContactWithUsMobileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactWithUsMobile
+        fields = ['email', 'reason', 'message', 'file']
 
 
 class TestModelSerializer(serializers.ModelSerializer):

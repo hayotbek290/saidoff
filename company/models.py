@@ -47,7 +47,7 @@ class ContactWithUsMobile(models.Model):
     email = models.EmailField()
     reason = models.TextField()
     message = models.TextField()
-    # file = models.FileField(upload_to='contact_files', null=True, blank=True)
+    file = models.ForeignKey(Media, on_delete=models.CASCADE)
 
 class ContactWithUsCategory(models.Model):
     name = models.CharField(max_length=255)
