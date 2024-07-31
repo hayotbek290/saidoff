@@ -4,20 +4,12 @@ from .models import TestModel
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .serializers import TestModelSerializer, ContactWithUsMobileSerializer
+from .serializers import  ContactWithUsMobileSerializer
+from django.http import HttpResponse
 
 class TestView(View):
     def get(self, request):
-        test_objects = TestModel.objects.all()
-        serializer = TestModelSerializer(test_objects, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-
-
-
-
-
+        return HttpResponse('This is the TestView')
 
 class ContactWithUsMobileView(APIView):
     def post(self, request):

@@ -20,18 +20,26 @@ class Subject(models.Model):
  
     def __str__(self):
         return self.name
+    
 
 class SubjectType(models.Model):
-   
     name = models.CharField(max_length=255)
     subtopic = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    
     SUBJECT_TYPE_CHOICES = (
         ('local', 'Local'),
         ('global', 'Global'),
     )
+    
+    subject_type = models.CharField(
+        max_length=6,
+        choices=SUBJECT_TYPE_CHOICES,
+        default='local',
+    )
 
     def __str__(self):
         return self.name
+
 
 class UserSubject(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
